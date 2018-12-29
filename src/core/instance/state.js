@@ -287,15 +287,19 @@ function initMethods (vm: Component, methods: Object) {
   }
 }
 
-function initWatch(vm: Component, watch: Object) {
+function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
-    let handlers = watch[key]
-    if (!Array.isArray(handlers)) {
-      handlers = [handlers]
+    const handler = watch[key]
+    if (Array.isArray(handler)) {
+      for (let i = 0; i < handler.length; i++) {
+        createWatcher(vm, key, handler[i])
+      }
+    } else {
+      createWatcher(vm, key, handler)
     }
-    handlers.forEach(handler => createWatcher(vm, key, handler))
   }
 }
+
 function createWatcher (
   vm: Component,
   expOrFn: string | Function,
